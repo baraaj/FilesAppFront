@@ -49,6 +49,9 @@ function Header() {
    const [showAddPatient, setShowAddPatient] = useState(false);
    const [editedProfile, setEditedProfile] = useState({ username: name, email: "",password:"" });
    const [isEditingProfile, setIsEditingProfile] = useState(false);
+   const [patientName, setPatientName] = useState('');
+   const [patientID, setPatientID] = useState('');
+   const [patients, setPatients] = useState([]);
    const handleToggleProfileEdit = () => {
     setIsEditingProfile(!isEditingProfile);
   };
@@ -87,19 +90,70 @@ function Header() {
       </ListItemIcon>
       Add Consultation
     </MenuItem>
+    <MenuItem onClick={closeMenu}>
+      Show Consultations
+    </MenuItem>
   </Menu>
 );
+const handleAddP = async (e) => {
+  e.preventDefault();
+
+  try {
+    const patientData = {
+      userId: userInfo.id,
+      patientName: patientName,
+      patienID: patientID,
+    };
+
+    const response = await axios.post('https://localhost:7120/api/PatientAPI', patientData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Handle the success response
+   // console.log(response.data);
+    alert('Patient added successfully');
+  
+  } catch (error) {
+    // Handle the error
+    //console.error(error);
+     alert(error.response.data)
+ 
+  }
+  
+};
+
+const getPatients=()=>{
+
+ // Make the API request to fetch the patient data
+ axios.get('https://localhost:7120/api/PatientAPI')
+ .then(response => {
+   // Handle the successful response
+   setPatients(response.data);
+   console.log(response.data)
+ })
+ .catch(error => {
+   // Handle the error
+   console.error(error);
+ });
+}
     // Sample data for the table
-    const rowsP = [
+   /* const rowsP = [
       { id: 1, name: 'John Doe', age: 25 },
       { id: 2, name: 'Jane Smith', age: 30 },
       // Add more rows as needed
-    ];
+    ];*/
+    const rowsP =patients.map(patient => ({
+      id: patient.id,
+      patientName: patient.patientName,
+      patientID: patient.patienID,
+    }));
   
     const columnsP = [
       { field: 'id', headerName: 'ID', width: 90 },
-      { field: 'name', headerName: 'Name', width: 180 },
-      { field: 'age', headerName: 'Age', width: 120 },
+      { field: 'patientName', headerName: 'Patient Name', width: 180 },
+      { field: 'patientID', headerName: 'Patient ID', width: 120 },
       { 
         //field: 'actions', 
         //headerName: 'Actions', 
@@ -116,6 +170,7 @@ function Header() {
         )
       },
     ] ;
+    
   const handleAddPatient = () => {
     setShowAddPatient(!showAddPatient);
   };
@@ -136,10 +191,7 @@ function Header() {
         console.error(error);
       });
   };
-  /*const handleProfileEdit = () => {
-    // Add your logic to handle the profile edit action
-    console.log("Profile edit action");
-  };*/
+
 
   const handleClickProfileImage = () => {
     fileInputRef.current.click();
@@ -209,6 +261,12 @@ const getUserInfo=()=>{axios.get(`https://localhost:7213/api/Account/users/${nam
   
   
 });}
+const handlePatientChange = (field) => (event) => {
+  setEditedProfile((prevState) => ({
+    ...prevState,
+    [field]: event.target.value,
+  }));
+};
 const handleProfileChange = (field) => (event) => {
   setEditedProfile((prevState) => ({
     ...prevState,
@@ -233,6 +291,7 @@ const handleProfileEdit = (id) => {
 };
 useEffect(() => {getUsers();},[Users]);
   useEffect(() => {
+    getPatients();
      getUserInfo();
     // A function that sets the orientation state of the tabs.
 
@@ -526,9 +585,9 @@ useEffect(() => {getUsers();},[Users]);
 <div style={{ flex: 1, marginTop: '1rem', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', borderRadius: '8px' }}>
   <h2>Add Patient</h2>
   <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem' }}>
-    <TextField label="Patient Name" variant="outlined" />
-    <TextField label="Patient ID" variant="outlined" />
-    <Button variant="contained" color="primary"style={{color:"white"}}>
+  <TextField label="PatientName" variant="outlined" value={patientName}  onChange={(event) => setPatientName(event.target.value)}required/>
+  <TextField label="PatientID" variant="outlined" value={patientID}  onChange={(event) => setPatientID(event.target.value)} required/>
+    <Button variant="contained" color="primary"style={{color:"white"}} onClick={(event) => handleAddP(event)}>
       Add
     </Button>
   </Box>

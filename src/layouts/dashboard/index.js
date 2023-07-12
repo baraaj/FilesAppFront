@@ -31,8 +31,22 @@ function Dashboard() {
   const [pieChartData,setPieChartData]=useState({labels:[],datasets:{}});
   const[files,setFiles]=useState([]);
   const[users,setUsers]=useState([]);
- 
-  useEffect(()=>{
+   const[patients,setPatients]=useState([]);
+   const getPatients=()=>{
+
+    // Make the API request to fetch the patient data
+    axios.get('https://localhost:7120/api/PatientAPI')
+    .then(response => {
+      // Handle the successful response
+      setPatients(response.data);
+       
+    })
+    .catch(error => {
+      // Handle the error
+      console.error(error);
+    });
+   }
+   const getFiles=()=>{
     
     axios.get('https://localhost:7268/api/FileAPI')
     .then(response => {
@@ -57,6 +71,10 @@ function Dashboard() {
       // Handle the error
       console.error(error);
     });
+   }
+  useEffect(()=>{
+    getFiles();
+    getPatients();
   },[])
   const generateChartData = (data) => {
     const fileCounts = {};
@@ -150,7 +168,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="leaderboard"
                 title="Patients"
-                count="2,300"
+                count={patients.length}
                 percentage={{
                   color: "success",
                   amount: "+3%",
