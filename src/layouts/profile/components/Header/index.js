@@ -144,7 +144,7 @@ function Header() {
   const handleClickProfileImage = () => {
     fileInputRef.current.click();
   };
-  const handleDelete = (userId) => {
+  /*const handleDelete = (userId) => {
     axios.delete(`https://localhost:7213/api/Account/users/${userId}`)
     .then(response => {
       // Handle the success response
@@ -155,7 +155,28 @@ function Header() {
       // Handle the error
       console.error(error);
     });
+};*/
+const handleDelete = (userId) => {
+  // Delete the user
+  axios.delete(`https://localhost:7213/api/Account/users/${userId}`)
+    .then(() => {
+      // Delete the files associated with the user
+      axios.delete(`https://localhost:7268/api/FileAPI/user/files/${userId}`)
+        .then(response => {
+           console.log(response)
+        })
+        .catch(error => {
+          console.error('Error retrieving user files:', error);
+        });
+      
+      alert('User and associated files deleted successfully');
+    })
+    .catch(error => {
+      // Handle the error
+      console.error('Error deleting user:', error);
+    });
 };
+
   const handleEdit = (userId) => {
     // Perform the edit action using the user ID
     console.log(`Editing user with ID ${userId}`);
