@@ -1,0 +1,18 @@
+.navbar-primary {
+    background-color: #f5f7fa; /* Set your desired background color */
+    color: #0c0b0b; /* Set your desired text color */
+    text-decoration: underline;
+  }
+  
+.errText{
+    color:rebeccapurple;
+    background-color: blue;
+}
+.red-text{
+    color: red;
+}
+.redUnderlineText {
+    color: red;
+    background-color: #0c0b0b;
+}
+  
