@@ -32,8 +32,11 @@ import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/doctor.jpg";
 import Overview from 'layouts/profile';
 import { Avatar, Box, Button, Typography } from '@mui/material';
-import { Add } from "@mui/icons-material";
+import { Add,List } from "@mui/icons-material";
+import { Navigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 function Header() {
+  const navigate = useNavigate();
   const [menu, setMenu] = useState(null);
  //console.log(localStorage.userName)
  const name=localStorage.userName;
@@ -55,9 +58,20 @@ function Header() {
    const handleToggleProfileEdit = () => {
     setIsEditingProfile(!isEditingProfile);
   };
+
+
+  const handleMenuItemClick = (e,id) => {
+   e.preventDefault();
+   navigate(`/consultation/${id}`);
+  };
+  const handleList = (e,id) => {
+    e.preventDefault();
+    //navigate(`/consultationList?id=${id}`);
+    navigate(`/consultationList/${id}`);
+   };
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);
   const closeMenu = () => setMenu(null);
-  const renderMenu = (
+  const renderMenu = (params) => (
     <Menu
       id="simple-menu"
       anchorEl={menu}
@@ -78,23 +92,39 @@ function Header() {
       </ListItemIcon>
       Edit
     </MenuItem>
-    <MenuItem onClick={closeMenu}>
+    <MenuItem onClick={() => handleDeletePatient(params.row.id)}>
       <ListItemIcon>
         <Delete fontSize="small" />
       </ListItemIcon>
       Delete
     </MenuItem>
-    <MenuItem onClick={closeMenu}>
+    <MenuItem onClick={(e)=>handleMenuItemClick(e,params.row.id)}>
       <ListItemIcon>
         <Add fontSize="small" />
       </ListItemIcon>
       Add Consultation
     </MenuItem>
-    <MenuItem onClick={closeMenu}>
+    <MenuItem onClick={(e)=>handleList(e,params.row.id)}>
+    <ListItemIcon>
+    <List fontSize="small" />
+  </ListItemIcon >
       Show Consultations
     </MenuItem>
   </Menu>
 );
+const handleDeletePatient = (patientId) => {
+  axios
+    .delete(`https://localhost:7120/api/PatientAPI/${patientId}`)
+    .then(response => {
+      // Handle the success response
+     alert('Patient deleted successfully');
+      // Refresh the patient list or perform any other necessary action
+    })
+    .catch(error => {
+      // Handle the error
+      console.error(error);
+    });
+};
 const handleAddP = async (e) => {
   e.preventDefault();
 
@@ -165,7 +195,7 @@ const getPatients=()=>{
                 more_vert
               </Icon>
             </MDBox>
-            {renderMenu}
+            {renderMenu(params)}
           </div>
         )
       },

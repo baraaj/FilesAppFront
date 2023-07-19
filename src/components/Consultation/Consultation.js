@@ -1,38 +1,48 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-
+import { Navigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 export default function Consultation() {
+  const navigate = useNavigate();
   const [allergies, setAllergies] = useState('');
   const [date, setDate] = useState('');
   const [frais, setFrais] = useState('');
   const [motif, setMotif] = useState('');
-  const [nom_patient, setNom_patient] = useState('');
   const [traitement, setTraitement] = useState('');
   const [type_consultation, setType_consultation] = useState('');
-
-  function add(e) {
+  const { id } = useParams();
+  const handleClick = (e) => {
     e.preventDefault();
+    window.location.href = '/profile';
+  };
+
+  const add = (e) => {
+    e.preventDefault();
+    const requestData = {
+      patientId: id,
+      allergies,
+      date,
+      frais,
+      motif,
+      traitement,
+      typeConsultation: type_consultation,
+    };
+  
     axios
-      .post('http://localhost:8089/add', {
-        allergies: allergies,
-        date: date,
-        frais: frais,
-        motif: motif,
-        nom_patient: nom_patient,
-        traitement: traitement,
-        type_consultation: type_consultation,
-      })
+      .post('https://localhost:7120/api/ConsultationAPI', requestData)
       .then((response) => {
         console.log(response);
+        alert("Consultation added successfully!")
       })
       .catch((error) => {
         console.log(error);
       });
-  }
-
+  };
   function handleClickSave() {
-    window.location.href = '/listConsultation';
+    //add(e);
+    //window.location.href = '/listConsultation';
   }
 
   return (
@@ -79,28 +89,8 @@ export default function Consultation() {
                   onChange={(e) => setFrais(e.target.value)}
                 />
               </div>
-              <div className='form-group'>
-                <label>motif:</label>
-                <input
-                  type='text'
-                  placeholder='motif'
-                  name='motif'
-                  className='form-control'
-                  value={motif}
-                  onChange={(e) => setMotif(e.target.value)}
-                />
-              </div>
-              <div className='form-group'>
-                <label>nom_patient:</label>
-                <input
-                  type='text'
-                  placeholder='nom_patient'
-                  name='nom_patient'
-                  className='form-control'
-                  value={nom_patient}
-                  onChange={(e) => setNom_patient(e.target.value)}
-                />
-              </div>
+        
+               
               <div className='form-group'>
                 <label>traitement:</label>
                 <input
@@ -119,8 +109,12 @@ export default function Consultation() {
                              onChange={(e)=>setType_consultation(e.target.value)} />
                         </div>
                         <div>
-                            <button className='btn btn-success' type="submit" onClick={handleClickSave}>Save</button>
-                            <button className='btn btn-danger' style={{marginLeft:"10px"}}>Cancel</button>
+                            <button className='btn btn-success' type="submit" onClick={(e) => {add(e)}}>Save</button>
+                            <a href="/profile">
+      <button className="btn btn-danger" style={{ marginLeft: "10px" }} onClick={handleClick}>
+        Cancel
+      </button>
+    </a>
                         </div>
                     </form>
                 </div>

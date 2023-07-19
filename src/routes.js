@@ -18,6 +18,8 @@ import Logout from "layouts/authentication/logout/Logout";
 import Facture from "components/Facture/Facture";
 import Calendar from "components/calendar/calendar";
 import Consultation from "components/Consultation/Consultation";
+import Cover from "layouts/authentication/reset-password/cover";
+import ConsultationList from "components/Consultation/ConsultationList";
 
 const routes = [
   {
@@ -49,6 +51,13 @@ const routes = [
     route: "/splits/:id",
     component: <Split />,
     },
+    {
+     // type: "collapse",
+      name: "reset",
+      key: "reset",
+      route: "/reset",
+      component: <Cover />,
+      },
   {
     type: "collapse",
     name: "Files",
@@ -65,6 +74,22 @@ const routes = [
     route: "/patient",
     component: <Billing />,
   },
+  {
+   // type: "collapse",
+    name: "Consultations",
+    key: "Consultations",
+    //icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/consultation/:id",
+    component: <Consultation />,
+  },
+  {
+    // type: "collapse",
+     name: "ConsultationsL",
+     key: "ConsultationsL",
+     //icon: <Icon fontSize="small">receipt_long</Icon>,
+     route: "/consultationList/:id",
+     component: <ConsultationList />,
+   },
  
   {
     type: "collapse",

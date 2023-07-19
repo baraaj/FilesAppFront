@@ -169,6 +169,24 @@ try {
                   Sign up
                 </MDTypography>
               </MDTypography>
+
+            
+            </MDBox>
+            <MDBox>
+            <MDTypography variant="button" color="text">
+                Forget Password?{" "}
+                <MDTypography
+                  component={Link}
+                  to="/reset"
+                  variant="button"
+                  color="info"
+                  fontWeight="medium"
+                  textGradient
+             >
+                 Reset Password
+                </MDTypography>
+              </MDTypography>
+
             </MDBox>
           </MDBox>
         </MDBox>

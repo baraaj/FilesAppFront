@@ -3,53 +3,33 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { useState,useEffect } from 'react';
+import { useLocation } from "react-router-dom";
+import { isDate } from 'moment';
+import { useParams } from 'react-router-dom';
 
 
-
-const EMPLOYEE_API_URL="http://localhost:8089/all";
 export default function ConsultationList() {
-    const [Employees,setEmployees]=  useState(null);
+    const [Consultations,setConsultations]=  useState([]);
+    const location = useLocation();
+    //const id = new URLSearchParams(location.search).get("id");
+    const { id } = useParams();
+   // console.log(location.state)
+const fetchConsultationsByPatientId = async (id) => {
+  try {
+    const response = await axios.get(`https://localhost:7120/api/ConsultationAPI/patient/${id}`);
+   setConsultations(response.data);
 
-    const deleteEmployee=async(id)=>{
-      try {
-        await axios.delete(`http://localhost:8089/delete/${id}`).then(res =>{
-          Employees= Employees.filter(item => item.id !==id);
-          setEmployees(Employees);
-          alert("Employee deleted successfully !");
-
-
-        })
-        
-      } catch (error) {
-        console.log(error);
-        
-      }
-      Show()
-    };
-    const Show=()=>{
-      axios.get("http://localhost:8080/api/v1/employees").then(response =>{
-        const Employees= response.data;
-        setEmployees(Employees)
-      })
-    }
-    function EmployeeList(){
-        axios.get(EMPLOYEE_API_URL).then(
-            response =>{
-                const employees= response.data;
-                setEmployees(employees);
-                
-                
-            })
-    }
-    
-    function handleClick() {
-        window.location.href = '/ADDConsultation';
-      }
-    
+  } catch (error) {
+    console.log(error);
+    // Handle error
+    //throw new Error('Failed to fetch consultations by patient ID');
+    setConsultations([]);
+  }
+};
     useEffect(()=>{
-        EmployeeList()
+    fetchConsultationsByPatientId(id);
         
-    },[]
+    },[id]
     )
     const columns= [
         { field: 'id', headerName: 'ID', width: 90 },
@@ -78,12 +58,7 @@ export default function ConsultationList() {
             width: 150,
             
           },
-          {
-            field: 'nom_patient',
-            headerName: 'nom_patient',
-            width: 150,
-            
-          },
+          
           {
             field: 'traitement',
             headerName: 'traitement',
@@ -92,37 +67,42 @@ export default function ConsultationList() {
           },
         {
 
-          field: 'type_consultation,',
-          headerName: 'type_consultation,',
+          field: 'type_consultation',
+          headerName: 'type_consultation',
           width: 150,
           renderCell:(params)=>{
             return(
               <div>
-           
-                <a onClick={(e)=>{deleteEmployee(params.id,e)}}> delete </a>
-                <a href={'/updateConsultation/'+`${params.row.id}`} >Edit</a>
-                <a href={'/getone/'+`${params.row.id}`} >show</a>
+          
               </div>
             )
           }
         },
 
        ];
-      console.log(Employees);
-      
-      const rows =Employees ? Employees?.map((e)=>{
-        
-        return{
-     id: e.id,
-     allergies: e.allergies,
-     date: e.date,
-    frais:e.frais, 
-    motif:e.motif, 
-    nom_patient:e.nom_patient, 
-    traitement:e.traitement, 
-    type_consultation :e.type_consultation
-        }}):[];
-       
+       console.log(Consultations)
+       const rows =Consultations.map(e => ({
+        id: e.id,
+        allergies: e.allergies,
+        date: e.date,
+        frais: e.frais,
+        motif: e.motif,
+        traitement: e.traitement,
+        type_consultation: e.type_consultation
+      }));
+    /*  const rows = Consultations
+      ? Consultations.map((e) => {
+          return {
+            id: e.id,
+            allergies: e.allergies,
+            date: e.date,
+            frais: e.frais,
+            motif: e.motif,
+            traitement: e.traitement,
+            type_consultation: e.type_consultation
+          };
+        })
+      : [];*/
     
         
        
@@ -132,16 +112,15 @@ export default function ConsultationList() {
  
 
 
-<div style={{marginTop:50}}>
+<div style={{marginLeft:"300px",marginTop:"50px"}}>
 
 <br></br>
 <br></br>
 <br></br>
-    <button onClick={handleClick} class="btn btn-primary mb-2" >Add Consultation</button>
-
+  
     
 
-    <Box sx={{ height: 400, width: '100%'}}>
+    <Box sx={{ height: 400, width: '90%'}}>
       <DataGrid
         rows={rows}
         columns={columns}

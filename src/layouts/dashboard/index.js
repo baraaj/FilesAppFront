@@ -29,9 +29,28 @@ import { blue, green, red } from '@mui/material/colors';
 function Dashboard() {
   const [chartdata, setChartData] = useState({labels:[],datasets:{label:"",data:[]}});
   const [pieChartData,setPieChartData]=useState({labels:[],datasets:{}});
+  const [consData,setDataC]=useState({labels:[],datasets:{}});
   const[files,setFiles]=useState([]);
   const[users,setUsers]=useState([]);
    const[patients,setPatients]=useState([]);
+   const[consultations,setConsultations]=useState([]);
+  
+   const getConsultations=()=>{
+
+    // Make the API request to fetch the patient data
+    axios.get(' https://localhost:7120/api/ConsultationAPI')
+    .then(response => {
+      // Handle the successful response
+      setConsultations(response.data);
+      const consData=generateChartDataC(response.data);
+      setDataC(consData);
+    })
+    .catch(error => {
+      // Handle the error
+      console.error(error);
+    });
+   }
+   
    const getPatients=()=>{
 
     // Make the API request to fetch the patient data
@@ -56,6 +75,7 @@ function Dashboard() {
      
       const chartData = generateChartData(response.data.result);
       const piechartData= pieData(response.data.result);
+   
       setChartData(chartData);
       setPieChartData(piechartData);
     })
@@ -75,6 +95,7 @@ function Dashboard() {
   useEffect(()=>{
     getFiles();
     getPatients();
+    getConsultations();
   },[])
   const generateChartData = (data) => {
     const fileCounts = {};
@@ -136,8 +157,42 @@ function Dashboard() {
     return { labels, datasets };
   };
   
+ 
+ 
+
+  const generateChartDataC = (data) => {
+    const consultationCounts = {};
   
-  const { sales } = reportsLineChartData;
+    // Initialize the consultationCounts object with default values
+    const currentDate = new Date();
+    const currentWeekStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay());
+    const currentWeekEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + (6 - currentDate.getDay()));
+    
+    let currentDatePointer = new Date(currentWeekStart);
+    const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    while (currentDatePointer <= currentWeekEnd) {
+      const currentWeekday = weekdays[currentDatePointer.getDay()];
+      consultationCounts[currentWeekday] = 0;
+      currentDatePointer.setDate(currentDatePointer.getDate() + 1);
+    }
+  
+    data.forEach(consultation => {
+      const consultationDate = new Date(consultation.date);
+      const consultationWeekday = weekdays[consultationDate.getDay()];
+  
+      if (consultationCounts[consultationWeekday] !== undefined) {
+        consultationCounts[consultationWeekday]++;
+      }
+    });
+  
+    const labels = Object.keys(consultationCounts);
+    const datasets = {
+      label: 'Number of Consultations',
+      data: labels.map(weekday => consultationCounts[weekday]),
+    };
+  
+    return { labels, datasets };
+  };
   
 
 
@@ -169,11 +224,11 @@ function Dashboard() {
                 icon="leaderboard"
                 title="Patients"
                 count={patients.length}
-                percentage={{
+               /* percentage={{
                   color: "success",
                   amount: "+3%",
                   label: "than last month",
-                }}
+                }}*/
               />
             </MDBox>
           </Grid>
@@ -224,14 +279,15 @@ function Dashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="daily sales"
-                  description={
+                  title="daily Consultations"
+               description={
                     <>
-                      (<strong>+15%</strong>) increase in today sales.
+                     (<strong>+15%</strong>) increase in today consultations.  
+                   
                     </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
+                  } 
+                  date="updated Today"
+                  chart={consData}
                 />
               </MDBox>
             </Grid>
