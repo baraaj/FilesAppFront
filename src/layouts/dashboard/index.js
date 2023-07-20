@@ -237,13 +237,13 @@ function Dashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon="store"
-                title="Revenue"
-                count="34k"
-                percentage={{
+                title="Consultations"
+                count={consultations.length}
+               /* percentage={{
                   color: "success",
                   amount: "+1%",
                   label: "than yesterday",
-                }}
+                }}*/
               />
             </MDBox>
           </Grid>  

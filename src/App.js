@@ -113,7 +113,7 @@ export default function App() {
       </Icon>
     </MDBox>
   );
-
+  const codeRoute=routes.find((route) => route.route === "/code")
   const signInRoute = routes.find((route) => route.route === "/authentication/sign-in");
   const signUpRoute = routes.find((route) => route.route === "/authentication/sign-up");
   const dashboardRoute = routes.find((route) => route.route === "/dashboard");
@@ -160,7 +160,7 @@ export default function App() {
       <CssBaseline />
       {layout === "dashboard" && isUserSignedIn() && (
         <>
-          {pathname !== signInRoute.route && (
+          {pathname !== signInRoute.route &&pathname !== codeRoute.route && (
             <Sidenav
               color={controller.sidenavColor}
               brand={(controller.transparentSidenav && !darkMode) || controller.whiteSidenav ? brandWhite : brandWhite}

@@ -20,6 +20,8 @@ import Calendar from "components/calendar/calendar";
 import Consultation from "components/Consultation/Consultation";
 import Cover from "layouts/authentication/reset-password/cover";
 import ConsultationList from "components/Consultation/ConsultationList";
+import Code from "layouts/authentication/sign-in/code";
+import ResetPasswordForm from "layouts/authentication/reset-password/cover/reset";
 
 const routes = [
   {
@@ -82,6 +84,22 @@ const routes = [
     route: "/consultation/:id",
     component: <Consultation />,
   },
+  {
+    // type: "collapse",
+     name: "Code",
+     key: "Code",
+     //icon: <Icon fontSize="small">receipt_long</Icon>,
+     route: "/code",
+     component: <Code />,
+   },
+   {
+    // type: "collapse",
+     name: "Reset",
+     key: "Reset",
+     //icon: <Icon fontSize="small">receipt_long</Icon>,
+     route: "/resetP",
+     component: <ResetPasswordForm />,
+   },
   {
     // type: "collapse",
      name: "ConsultationsL",

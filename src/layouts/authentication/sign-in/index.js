@@ -62,7 +62,7 @@ try {
      localStorage.setItem("userName", userName);
       // Store the token in localStorage or a state management solution
       // Redirect the user to the desired page
-  navigate("/dashboard");
+  navigate("/code");
  
       //console.log(localStorage)
 
@@ -173,7 +173,7 @@ try {
             
             </MDBox>
             <MDBox>
-            <MDTypography variant="button" color="text">
+            <MDTypography style={{marginLeft:"55px"}}variant="button" color="text">
                 Forget Password?{" "}
                 <MDTypography
                   component={Link}

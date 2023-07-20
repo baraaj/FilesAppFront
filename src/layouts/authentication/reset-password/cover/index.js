@@ -7,12 +7,12 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import axios from 'axios'; // Import axios
-
+import backgroundImage from "assets/images/doctor.jpg";
 // Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
-
+import bgImage from "assets/images/doctor.jpg";
 // Images
-import bgImage from "assets/images/bg-reset-cover.jpeg";
+//import bgImage from "assets/images/bg-reset-cover.jpeg";
 
 function Cover() {
   const [email, setEmail] = useState('');
@@ -121,16 +121,8 @@ function Cover() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </MDBox>
-              <MDBox mb={4}>
-                <MDInput
-                  type="password"
-                  label="New Password"
-                  variant="standard"
-                  fullWidth
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                />
-              </MDBox>
+     
+             
               <MDBox mt={6} mb={1}>
                 <MDButton variant="gradient" color="info" fullWidth type="submit">
                   Reset
@@ -138,7 +130,7 @@ function Cover() {
               </MDBox>
             </form>
           )}
-          {success && <p>Password reset successful.</p>}
+          {success && alert("An email was sent to reset password")}
           {error && <p>{error}</p>}
         </MDBox>
       </Card>
