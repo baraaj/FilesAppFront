@@ -81,7 +81,7 @@ function Cover() {
 
   return (
     <CoverLayout image={bgImage}>
-      <Card style={{marginTop:"-50px"}}>
+      <Card style={{marginTop:"-90px"}}>
         <MDBox
           variant="gradient"
           bgColor="info"
@@ -110,6 +110,17 @@ function Cover() {
                 fullWidth
                 value={name}
                 onChange={handleNameChange}
+              />
+            </MDBox>
+           
+            <MDBox mb={2}>
+              <MDInput
+                type="text"
+                label="Speciality"
+                variant="standard"
+                fullWidth
+                //value={name}
+                //onChange={handleNameChange}
               />
             </MDBox>
             <MDBox mb={2}>
