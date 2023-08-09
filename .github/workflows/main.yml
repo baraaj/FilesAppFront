@@ -20,6 +20,8 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+      - name: update Dependencies
+        run: npm update @fullcalendar/timegrid
 
       - name: Build React App
         run: npm run build
