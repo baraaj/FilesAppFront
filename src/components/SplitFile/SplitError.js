@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import './split.css';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight,faChevronDown} from '@fortawesome/free-solid-svg-icons';
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 const useStyles = makeStyles({
   tableContainer: {
     overflowX: 'auto',
@@ -44,7 +45,9 @@ export default function SplitError() {
   const [record96,setRecord96] = useState({zones:[],errors:[]});
   const [errors,setErrors]=useState({zoneE:"",recE:""});
   const [err,setErr]=useState([]);
+  const [isCardVisible, setCardVisible] = useState(true);
   const [bla, setBla] = useState(false);
+  const t=[null];
   const fileTypeNumbers = {
     'Fichier de Facturation: Reception': '920000',
     'Refus de Fichier': '920999',
@@ -55,7 +58,9 @@ export default function SplitError() {
   };
  
   const classes = useStyles();
-   
+  const handleClose = () => {
+    setCardVisible(false);
+  };
  
   const handleSearch = (e) => {
     e.preventDefault();
@@ -217,17 +222,46 @@ export default function SplitError() {
 
 },[id])
 
- 
-   
+
   
   return (
+
     <div>
+       
         {console.log(errors[0])}
       { data.forEach((field) => {
               getZoneContent(field.id);
               
             })}
+       {isCardVisible && ( <div className="card border-warning mb-3">
+      <button style={{marginRight:"-1050px"}}className="btn btn-link ml-auto" onClick={handleClose}>
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+    <div className="card-body">
+<h5 className="card-title"style={{color:"red"}}>Errors</h5>
+<p className="card-text">This file contains errors.</p>
+
+
+{Array.isArray(errors) ? (
+  errors.map((e, index) => (
+    <>
+    <p key={index} className="card-text">
+      The error is located in record {e.recE} and zone {e.zoneE}
+    </p>
+    
+<h5 style={{color:"green"}}>Error message:</h5> {t}
+    </>
+  ))
+) : (
+  <p className="card-text">No errors to display</p>
+  
+)}
+
+
+</div>
+</div>)}
 <div style={{ marginLeft: '2%', fontWeight: '600',marginTop:"20px" }}>
+  
   <h5 style={{ paddingBottom: '2%' }}>
     {titleHide1 ? (
       <FontAwesomeIcon
@@ -295,13 +329,16 @@ export default function SplitError() {
 
                   return (
                     <TableCell key={index} style={cellStyle} align="center">
+ 
                       <div>
                         <p>
                           {zoneContent.zoneNumber}-{zoneContent.description}
                         </p>
                         <p>{zoneContent.content}</p>
                         {zoneContent.message !== '' && <p style={{ color: 'red' }}>{zoneContent.message}</p>}
+                        <p style={{display:"none"}}> {zoneContent.message !== ''&& zoneContent.content!=="R" && t.push(zoneContent.message)}  </p>
                       </div>
+                    
                     </TableCell>
                   );
                 })}
@@ -309,6 +346,7 @@ export default function SplitError() {
             </TableHead>
           </Table>
         </TableContainer>
+        
       </div>
     </div>
  
@@ -360,13 +398,16 @@ export default function SplitError() {
 
                   return (
                     <TableCell key={index} style={cellStyle} align="center">
+ 
                       <div>
                         <p>
                           {zoneContent.zoneNumber}-{zoneContent.description}
                         </p>
                         <p>{zoneContent.content}</p>
                         {zoneContent.message !== '' && <p style={{ color: 'red' }}>{zoneContent.message}</p>}
+                        <p style={{display:"none"}}> {zoneContent.message !== ''&& zoneContent.content!=="R" && t.push(zoneContent.message)}  </p>
                       </div>
+                     
                     </TableCell>
                   );
                 })}
@@ -374,6 +415,7 @@ export default function SplitError() {
             </TableHead>
           </Table>
         </TableContainer>
+        
         </div>
       </div>
       </div>
@@ -413,11 +455,14 @@ export default function SplitError() {
 
           return (
             <TableCell key={index} style={cellStyle} align="center">
+             
               <div>
                 <p>{zoneContent.zoneNumber}-{zoneContent.description}</p>
                 <p>{zoneContent.content}</p>
                 {zoneContent.message !== '' && <p style={{ color: 'red' }}>{zoneContent.message}</p>}
+               <p style={{display:"none"}}> {zoneContent.message !== ''&& zoneContent.content!=="R" && t.push(zoneContent.message)}  </p>
               </div>
+               
             </TableCell>
             
           );
@@ -427,7 +472,7 @@ export default function SplitError() {
     </TableHead>
   </Table>
 </TableContainer>
- 
+  
 {attestation.map((z, indexAttestation)=>(
             <div key={indexAttestation}>
                 <div style={{marginLeft: '2%',paddingBottom:'2%'}}> { z.hide? <FontAwesomeIcon onClick={()=>handleHideArray(z)} style={{color: "#289304",marginRight:'1%'}} fade icon={faChevronRight} size={'xs'} /> : <FontAwesomeIcon onClick={()=>handleHideArray(z)} style={{color: "#289304",marginRight:'1%'}} icon={faChevronDown} size={'xs'} />} Attestation {indexAttestation+1}</div>
@@ -462,11 +507,14 @@ export default function SplitError() {
 
           return (
             <TableCell key={index} style={cellStyle} align="center">
+      
               <div>
                 <p>{zoneContent.zoneNumber}-{zoneContent.description}</p>
                 <p>{zoneContent.content}</p>
                 {zoneContent.message !== '' && <p style={{ color: 'red' }}>{zoneContent.message}</p>}
+                <p style={{display:"none"}}> {zoneContent.message !== ''&& zoneContent.content!=="R" && t.push(zoneContent.message)}  </p>  
               </div>
+              
             </TableCell>
           );
         })
@@ -477,7 +525,7 @@ export default function SplitError() {
   </Table>
  
       </TableContainer>
-                       
+                 
                                   
                                   </div>
                                   
@@ -530,11 +578,14 @@ export default function SplitError() {
 
           return (
             <TableCell key={index} style={cellStyle} align="center">
+ 
               <div>
                 <p>{zoneContent.zoneNumber}-{zoneContent.description}</p>
                 <p>{zoneContent.content}</p>
                 {zoneContent.message !== '' && <p style={{ color: 'red' }}>{zoneContent.message}</p>}
+                <p style={{display:"none"}}> {zoneContent.message !== ''&& zoneContent.content!=="R" && t.push(zoneContent.message)}  </p>      
               </div>
+              
             </TableCell>
           );
         })}
@@ -542,7 +593,7 @@ export default function SplitError() {
     </TableHead>
   </Table>
       </TableContainer>
-    
+     
         </div>
       )}
     </div>
@@ -626,10 +677,9 @@ export default function SplitError() {
 </div>
   
   
-
-
-</div>
  
+</div>
+  
 
     );
 }

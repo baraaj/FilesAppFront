@@ -1,5 +1,4 @@
-import {Container, Paper} from '@mui/material';
-import {  Cancel, Save } from '@mui/icons-material';
+
 import axios from 'axios';
 import { useState, useEffect,useRef } from "react";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
@@ -19,7 +18,7 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
-import React from 'react';
+
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -36,103 +35,8 @@ import { Avatar, Box, Button, Typography } from '@mui/material';
 import { Add,List } from "@mui/icons-material";
 import { Navigate} from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-function Header() {
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState(''); // Define state variable
-  const [fullName, setFullName] = useState(''); // State for full name
-  const [email, setEmail] = useState(''); // State for email
-  const [address, setAddress] = useState(''); // State for address
-  const [nihi, setNihi] = useState(''); // State for Nihi
-  const [phone, setPhone] = useState(''); // State for phone
-  const [speciality, setSpeciality] = useState(''); // State for speciality
-  const handleSaveClick = (e,userId) => {
-    e.preventDefault();
-    const updatedUserData = {
-      fullName: fullName,
-       email: userInfo.email,
-       address:address,
-       nihi:nihi,
-       phone:phone,
-       speciality:speciality,
-       userName:userInfo.userName,
-       password:userInfo.password,
-      // Add other fields you want to update here
-    };
-   
-    // Send the updated user data to the server
-    axios.put(`https://localhost:7213/api/Account/users/${userId}`, updatedUserData)
-      .then(response => {
-        
-        console.log('User data updated successfully');
-        alert('User data updated successfully');
-        setIsEditing(false); // Exit edit mode after successful update
-      })
-      .catch(error => {
-        // Handle the error
-        console.error('Error updating user data:', error);
-      });
-  };
-
-  const handleEditClick = (e) => {
-    e.preventDefault();
-    setIsEditing(true);
-     
-  };
-  const handlePasswordChangeClick = () => {
-    setIsChangingPassword(true);
-  };
-
-  const handlePasswordChangeCancel = () => {
-    setIsChangingPassword(false);
-  };
-
-  const handlePasswordChangeSave = () => {
-     
-  
-    axios
-      .post('https://localhost:7213/api/Account/change-password', {
-        userId:userInfo.id,
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-        confirmPassword:confirmNewPassword,
-      })
-      .then((response) => {
-        // Password changed successfully
-        console.log('Password changed successfully');
-        alert('Password changed successfully');
-        setIsChangingPassword(false); // Close the password change dialog
-      })
-      .catch((error) => {
-        // Handle the error (e.g., display an error message)
-        console.error('Error changing password:', error);
-        alert('Error changing password');
-      });
-  };
-  
- 
-  const handleCancelClick = () => {
-     
-    // Exit edit mode
-    setIsEditing(false);
-  };
-  useEffect(() => {
-     getUserInfo();
-  }, []);
-
- /* const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUserData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };*/
+import Header from 'layouts/profile/components/Header';
+function Patients() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(null);
  //console.log(localStorage.userName)
@@ -151,6 +55,7 @@ function Header() {
    const [isEditingProfile, setIsEditingProfile] = useState(false);
    const [patientName, setPatientName] = useState('');
    const [patientID, setPatientID] = useState('');
+    const [dateNaiss, setDateNaiss] = useState('');
    const [patients, setPatients] = useState([]);
    const handleToggleProfileEdit = () => {
     setIsEditingProfile(!isEditingProfile);
@@ -166,49 +71,53 @@ function Header() {
     //navigate(`/consultationList?id=${id}`);
     navigate(`/consultationList/${id}`);
    };
-  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
+ // const openMenu = ({ currentTarget }) => setMenu(currentTarget);
+ const openMenu = (id, { currentTarget }) => {
+  setMenu({ id, anchorEl: currentTarget });
+};
   const closeMenu = () => setMenu(null);
   const renderMenu = (params) => (
     <Menu
-      id="simple-menu"
-      anchorEl={menu}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "left",
-      }}
-      open={Boolean(menu)}
-      onClose={closeMenu}
-    >
-       <MenuItem onClick={closeMenu}>
-      <ListItemIcon>
-        <Edit fontSize="small" />
-      </ListItemIcon>
-      Edit
-    </MenuItem>
-    <MenuItem onClick={() => handleDeletePatient(params.row.id)}>
-      <ListItemIcon>
-        <Delete fontSize="small" />
-      </ListItemIcon>
-      Delete
-    </MenuItem>
-    <MenuItem onClick={(e)=>handleMenuItemClick(e,params.row.id)}>
-      <ListItemIcon>
-        <Add fontSize="small" />
-      </ListItemIcon>
-      Add Consultation
-    </MenuItem>
-    <MenuItem onClick={(e)=>handleList(e,params.row.id)}>
-    <ListItemIcon>
-    <List fontSize="small" />
-  </ListItemIcon >
-      Show Consultations
-    </MenuItem>
-  </Menu>
-);
+    id="simple-menu"
+    anchorEl={menu ? menu.anchorEl : null} // Check if menu is null
+    anchorOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "left",
+    }}
+    open={Boolean(menu?.anchorEl)} // Check if menu.anchorEl is not null
+    onClose={closeMenu}
+  >
+      <MenuItem onClick={closeMenu}>
+        <ListItemIcon>
+          <Edit fontSize="small" />
+        </ListItemIcon>
+        Edit
+      </MenuItem>
+      <MenuItem onClick={() => handleDeletePatient(menu.id)}>
+        <ListItemIcon>
+          <Delete fontSize="small" />
+        </ListItemIcon>
+        Delete
+      </MenuItem>
+      <MenuItem onClick={(e) => handleMenuItemClick(e, menu.id)}>
+        <ListItemIcon>
+          <Add fontSize="small" />
+        </ListItemIcon>
+        Add Consultation
+      </MenuItem>
+      <MenuItem onClick={(e) => handleList(e, menu.id)}>
+        <ListItemIcon>
+          <List fontSize="small" />
+        </ListItemIcon>
+        Show Consultations
+      </MenuItem>
+    </Menu>
+  );
+  
 const handleDeletePatient = (patientId) => {
   axios
     .delete(`https://localhost:7120/api/PatientAPI/${patientId}`)
@@ -229,6 +138,7 @@ const handleAddP = async (e) => {
     const patientData = {
       userId: userInfo.id,
       patientName: patientName,
+      dateNaiss:dateNaiss,
       patienID: patientID,
     };
 
@@ -267,14 +177,18 @@ const getPatients=()=>{
 }
     
     const rowsP =patients.map(patient => ({
+     
+      key:patient.id,
       id: patient.id,
+      dateNaiss:patient.dateNaiss.split("T")[0],
       patientName: patient.patientName,
       patientID: patient.patienID,
     }));
-  
+     
     const columnsP = [
-      { field: 'id', headerName: 'ID', width: 90 },
+      { field: 'id', headerName: 'ID', width: 60 },
       { field: 'patientName', headerName: 'Patient Name', width: 180 },
+      { field: 'dateNaiss', headerName: 'Birth Date', width: 120 },
       { field: 'patientID', headerName: 'Patient ID', width: 120 },
       { 
         //field: 'actions', 
@@ -283,7 +197,11 @@ const getPatients=()=>{
         renderCell: (params) => (
           <div>
             <MDBox color="text" px={2}>
-              <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+              <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small"
+                 onClick={(e) => openMenu(params.row.id, e)}
+                 >
+ 
+            
                 more_vert
               </Icon>
             </MDBox>
@@ -365,7 +283,6 @@ const getUserInfo=()=>{axios.get(`https://localhost:7213/api/Account/users/${nam
   // Handle the successful response
 
  setUserInfo(response.data);
- console.log(response.data)
 })
 .catch(error => {
   // Handle the error
@@ -501,7 +418,7 @@ useEffect(() => {getUsers();},[Users]);
   ];
   
   const rows = Users.map(user => ({
-   
+    key:user.id,
     id: user.id,
     Username: user.userName,
     Email: user.email,
@@ -533,7 +450,6 @@ useEffect(() => {getUsers();},[Users]);
       />
       
       <Card
-      style={{marginLeft:"100px",marginRight:"100px"}}
         sx={{
           position: "relative",
           mt: -8,
@@ -577,36 +493,7 @@ useEffect(() => {getUsers();},[Users]);
             </MDBox>
             
           </Grid>
-        {/*  <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
-            <AppBar position="static">
-              <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
-              <Tab
-  label="Edit"
-  icon={<EditIcon fontSize="small" />}
-  onClick={handleToggleProfileEdit}
-/>
-                <Tab
-                  label="App"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
-                    </Icon>
-                  }
-                />
-                <Tab
-                  label="Message"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      email
-                    </Icon>
-                  }
-                />
-                
-              </Tabs>
-            </AppBar>
-            
-
-          </Grid>*/}
+          
         </Grid>
         {isEditingProfile && (
   <Box sx={{ display: 'flex',marginTop:"30px" , alignItems: 'center', gap: '1rem', padding: '1rem', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', borderRadius: '8px' }}>
@@ -623,58 +510,13 @@ useEffect(() => {getUsers();},[Users]);
 )}
       </Card>
     </MDBox>
-   {/*
+   
     <div>
   
-      {userInfo.role==="Administrator"?
-
-      <div>
-        <MDBox style={{width:"80%",margin:"0px 100px"}}
-                  mx={2}
-                  mt={-3}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="light"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  <MDTypography variant="h4" color="blue"style={{justifyContent: 'center',   alignItems: 'center',margin:"5px 390px"}}>
-                  Users List
-                  </MDTypography>
-                </MDBox>
-         
-   
-      <MDBox pt={3} style={{width:"80%",margin:"0px 100px"}}>
-      <DataGrid
        
-              rows={rows}
-              columns={columns}
-              components={{
-                Toolbar: GridToolbar,
-              }}
-              pagination
-              pageSize={5}
-              rowsPerPageOptions={[5, 10]}
-              checkboxSelection
-              disableSelectionOnClick // Disable row selection when clicking on the row
-              disableColumnMenu // Disable the column menu
-              disableColumnFilter // Disable column filtering
-              disableColumnSelector // Disable column selector
-              density="compact" // Use compact density for a more condensed look
-              autoHeight // Automatically adjusts the height based on the number of rows
-              hideFooterSelectedRowCount // Hide the selected row count in the footer
-              loading={!Users.length} // Show a loading indicator when the user list is being fetched
-              getRowHeight={() => 60} // Set the desired row height here
-            />
-                </MDBox>
-     </div>
-    :null}
 
 
-
-
-{userInfo.role==="User"? <div style={{ display: "flex" }}>
+  <div style={{ display: "flex" }}>
 <div style={{ flex: 1.3}}>
 <Box display="flex" alignItems="center">
      
@@ -700,6 +542,7 @@ useEffect(() => {getUsers();},[Users]);
   <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem' }}>
   <TextField label="PatientName" variant="outlined" value={patientName}  onChange={(event) => setPatientName(event.target.value)}required/>
   <TextField label="PatientID" variant="outlined" value={patientID}  onChange={(event) => setPatientID(event.target.value)} required/>
+  <TextField  type="date" variant="outlined" value={dateNaiss}  onChange={(event) => setDateNaiss(event.target.value)} required/>
     <Button variant="contained" color="primary"style={{color:"white"}} onClick={(event) => handleAddP(event)}>
       Add
     </Button>
@@ -716,240 +559,9 @@ useEffect(() => {getUsers();},[Users]);
 
 
   
-:null}
+ 
 
-         </div>*/}
-         <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ padding: 2, marginTop: 2,marginLeft:"100px",marginRight:"100px" }}>
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={3}>
-            <Typography variant="body1">Full Name</Typography>
-          </Grid>
-          <Grid item xs={12} sm={9}>
-            <Typography variant="body2" color="textSecondary">
-              {isEditing ? (
-                <input
-                type="text"
-                  name="fullName"
-                  placeholder={userInfo.fullName}
-                  value={fullName}
-                  onChange={(e) => {e.preventDefault();setFullName(e.target.value);}}
-                />
-              ) : (
-                userInfo.fullName
-              )}
-            </Typography>
-          </Grid>
-          
-          <Grid item xs={12}>
-            <hr />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <Typography variant="body1">Email</Typography>
-          </Grid>
-          <Grid item xs={12} sm={9}>
-            <Typography variant="body2" color="textSecondary">
-              {isEditing ? (
-                <input
-                type="text"
-                  name="email"
-                  placeholder={userInfo.email}
-                  value={email}
-                  onChange={(e) => {e.preventDefault();setEmail(e.target.value);}}
-                />
-              ) : (
-                userInfo.email
-              )}
-            </Typography>
-          </Grid>
-          
-          <Grid item xs={12}>
-            <hr />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <Typography variant="body1">Nihi</Typography>
-          </Grid>
-          <Grid item xs={12} sm={9}>
-            <Typography variant="body2" color="textSecondary">
-              {isEditing ? (
-                <input
-                type="text"
-                  name="Nihi"
-                  placeholder={userInfo.nihi}
-                  value={nihi}
-                  onChange={(e) => {e.preventDefault();setNihi(e.target.value);}}
-                />
-              ) : (
-                userInfo.nihi
-              )}
-            </Typography>
-          </Grid>
-          
-          <Grid item xs={12}>
-            <hr />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <Typography variant="body1">Speciality</Typography>
-          </Grid>
-          <Grid item xs={12} sm={9}>
-            <Typography variant="body2" color="textSecondary">
-              {isEditing ? (
-                <input
-                type="text"
-                  name="speciality"
-                  value={speciality}
-                  placeholder={userInfo.speciality}
-                  onChange={(e) => {e.preventDefault();setSpeciality(e.target.value);}}
-                />
-              ) : (
-                userInfo.speciality
-              )}
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <hr />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <Typography variant="body1">Phone</Typography>
-          </Grid>
-          <Grid item xs={12} sm={9}>
-            <Typography variant="body2" color="textSecondary">
-              {isEditing ? (
-                <input
-                type="text"
-                  name="phone"
-                  placeholder={userInfo.phone}
-                  value={phone}
-                  onChange={(e) => {e.preventDefault();setPhone(e.target.value);}}
-                />
-              ) : (
-                userInfo.phone
-              )}
-            </Typography>
-          </Grid>
-        
-          <Grid item xs={12}>
-            <hr />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <Typography variant="body1">Address</Typography>
-          </Grid>
-          <Grid item xs={12} sm={9}>
-            <Typography variant="body2" color="textSecondary">
-              {isEditing ? (
-                <input
-                type="text"
-                  name="address"
-                  placeholder={userInfo.address}
-                  value={address}
-                  onChange={(e) => {
-                    e.preventDefault();
-                    setAddress(e.target.value);
-                  }}
-                />
-              ) : (
-                userInfo.address
-              )}
-            </Typography>
-          </Grid>
-        </Grid>
-        <div className="button-container" style={{textAlign:"right",marginTop:"20px"}}>
-  {isEditing ? (
-      <div>
-    <Button
-      variant="contained"
-      startIcon={<Save />}
-      onClick={e=>handleSaveClick(e,userInfo.id)}
-    >
-      Save
-    </Button>
-     <Button
-     variant="outlined"
-     startIcon={<Cancel />}
-     onClick={handleCancelClick}
-     style={{
-       marginLeft: '10px', // Add some spacing between "Save" and "Cancel"
-       color: 'red',       // Text color
-       borderColor: 'red', // Border color
-       boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)' // Box shadow
-     }}
-   >
-     Cancel
-   </Button>
-   </div>
-  ) : (
-    <div>
-    <Button
-  variant="outlined"
-  startIcon={<Edit />}
-  onClick={(e) => {
-    //e.preventDefault();
-    handleEditClick(e);
-  }}
-  style={{
-    color: 'green',                 // Text color
-    borderColor: 'green',           // Border color
-    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)' // Box shadow
-  }}
->
-  Edit
-</Button>
-     <Button
-     variant="outlined"
-     //startIcon={<Cancel />}
-     onClick={handlePasswordChangeClick}
-     style={{
-       marginLeft: '10px', // Add some spacing between "Save" and "Cancel"
-       color: 'red',       // Text color
-       borderColor: 'red', // Border color
-       boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)' // Box shadow
-     }}
-   >
-     Change Password
-   </Button>
-</div>
-  )}
-    <Dialog open={isChangingPassword} onClose={handlePasswordChangeCancel}>
-        <DialogTitle>Change Password</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Current Password"
-            type="password"
-            fullWidth
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            label="New Password"
-            type="password"
-            fullWidth
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            margin="normal"
-          />
-          <TextField
-            label="Confirm New Password"
-            type="password"
-            fullWidth
-            value={confirmNewPassword}
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
-            margin="normal"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handlePasswordChangeCancel} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handlePasswordChangeSave} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-</div>
-
-      </Paper>
-    </Container>
+    </div>
     </div>
   );
 }
@@ -965,4 +577,4 @@ Header.propTypes = {
 };
  
 
-export default Header;
+export default Patients;

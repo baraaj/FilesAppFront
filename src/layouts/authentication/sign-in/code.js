@@ -32,7 +32,7 @@ function Code() {
     if (inputCode === verificationCode) {
       // Code verification is successful, proceed with login logic
      alert("Login successful");
-     navigate("/dashboard");
+     navigate("/profile");
     } else {
       // Code verification failed
     alert("Invalid verification code");
@@ -73,7 +73,7 @@ function Code() {
             </MDBox>
             <MDBox mb={2} >
              
-              <h4 style={{alignItems:"center",margin:"40px"}}> We just sent a confirmation code over to {userData.email}</h4>
+              <h5 style={{alignItems:"center",margin:"40px"}}> We just sent a confirmation code over to<span style={{color:"red"}}> {userData.email}</span></h5>
             </MDBox>
             
         <MDBox pt={4} pb={3} px={3}>

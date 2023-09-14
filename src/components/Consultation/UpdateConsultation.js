@@ -20,17 +20,19 @@ export default function UpdateConsultation() {
   function add(e) {
     e.preventDefault();
     axios
-      .put(`http://localhost:8089/put/${id}`, {
+      .put(`https://localhost:7120/api/ConsultationAPI/${id}`, {
+        id:employee.id,
         allergies: allergies,
         date: date,
         frais: frais,
-        motif: motif,
-        nom_patient: nom_patient,
+        //motif: motif,
+        //nom_patient: nom_patient,
         traitement: traitement,
-        type_consultation: type_consultation,
+        typeConsultation: type_consultation,
       })
       .then((response) => {
         console.log(response);
+        alert('Successfully updated')
       })
       .catch((error) => {
         console.log(error);
@@ -40,15 +42,16 @@ export default function UpdateConsultation() {
   // Cette fonction est appelée lorsque l'utilisateur clique sur le bouton "Cancel"
   function handleClickCancel() {
     // Rediriger l'utilisateur vers la page d'accueil
-    window.location.href = '/listConsultation';
+    window.location.href = '/patients';
   }
 
   // Cette fonction est appelée au chargement du composant pour récupérer les informations de la consultation à modifier
   function getById() {
     axios
-      .get(`http://localhost:8089/get/${id}`)
+      .get(`https://localhost:7120/api/ConsultationAPI/${id}`)
       .then(function (response) {
         setEmployee(response.data);
+         
       })
       .catch(function (error) {
         console.log(error);
@@ -62,10 +65,10 @@ export default function UpdateConsultation() {
 
   // Afficher le formulaire pour modifier la consultation
   return (
-    <div className="container">
+    <div style={{marginTop:"80px"}}className="container">
       <div className="row">
         <div className="card col-md-6 offset-md-3 offset-md-3">
-          <h3 className="text-center">Modifier la consultation</h3>
+          <h3 className="text-center">Update consultation</h3>
           <div className="card-body">
             <form onSubmit={add}>
               <div className="form-group">
@@ -73,8 +76,9 @@ export default function UpdateConsultation() {
                 <input
                   type="text"
                   id="allergies"
-                  name="allergies"
+                  name="Allergies"
                   className="form-control"
+                  placeholder={employee.allergies}
                   value={allergies}
                   onChange={(e) => setAllergies(e.target.value)}
                 />
@@ -91,56 +95,38 @@ export default function UpdateConsultation() {
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="frais">Frais :</label>
+                <label htmlFor="frais">Fee :</label>
                 <input
                   type="number"
                   id="frais"
-                  name="frais"
+                  name="Fee"
                   className='form-control'
                   value={frais}
+                  placeholder={employee.frais}
                   onChange={(e) => setFrais(e.target.value)}
                 />
               </div>
+               
+             
               <div className='form-group'>
-                <label>motif:</label>
+                <label>Traitement:</label>
                 <input
                   type='text'
-                  placeholder='motif'
-                  name='motif'
-                  className='form-control'
-                  value={motif}
-                  onChange={(e) => setMotif(e.target.value)}
-                />
-              </div>
-              <div className='form-group'>
-                <label>nom_patient:</label>
-                <input
-                  type='text'
-                  placeholder='nom_patient'
-                  name='nom_patient'
-                  className='form-control'
-                  value={nom_patient}
-                  onChange={(e) => setNom_patient(e.target.value)}
-                />
-              </div>
-              <div className='form-group'>
-                <label>traitement:</label>
-                <input
-                  type='text'
-                  placeholder='traitement'
+                  
                   name='traitement'
                   className='form-control'
-                  value={traitement}
+                 placeholder={employee.traitement}
+                 value={traitement}
                   onChange={(e) => setTraitement(e.target.value)}
                 />
               </div>
               <div className='form-group'>
-                <label>type_consultation:</label>
+                <label> Consultation Type:</label>
                
-                            <input placeholder='type_consultation ' name='type_consultation' className='form-control'
+                            <input placeholder={employee.typeConsultation} name='type_consultation' className='form-control' value={type_consultation}
                              onChange={(e)=>setType_consultation(e.target.value)} />
                         </div>
-                        <div>
+                        <div style={{marginTop:"50px"}}>
                             <button className='btn btn-success' type="submit" onClick={add}>Save</button>
                             <button className='btn btn-danger' style={{marginLeft:"10px"}} onClick={handleClickCancel}>Cancel</button>
                         </div>

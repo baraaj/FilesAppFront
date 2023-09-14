@@ -22,7 +22,12 @@ import Cover from "layouts/authentication/reset-password/cover";
 import ConsultationList from "components/Consultation/ConsultationList";
 import Code from "layouts/authentication/sign-in/code";
 import ResetPasswordForm from "layouts/authentication/reset-password/cover/reset";
-
+import ErrorPage from "components/ErrorPage/Error";
+import Patients from "components/patients";
+import UpdateConsultation from "components/Consultation/UpdateConsultation";
+import ConsultationDetails from "components/Consultation/ConsultationDetails";
+import Users from "components/users";
+import ChangePasswordForm from "layouts/authentication/reset-password/changepassword";
 const routes = [
   {
     type: "collapse",
@@ -31,6 +36,7 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+    role: "admin",
   },
   {
     
@@ -60,6 +66,13 @@ const routes = [
       route: "/reset",
       component: <Cover />,
       },
+      {
+        // type: "collapse",
+         name: "change",
+         key: "change",
+         route: "/change",
+         component: <ChangePasswordForm />,
+         },
   {
     type: "collapse",
     name: "Files",
@@ -67,6 +80,7 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/files",
     component: <Tables />,
+    
   },
   {
    // type: "collapse",
@@ -75,6 +89,7 @@ const routes = [
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/patient",
     component: <Billing />,
+    role:"user",
   },
   {
    // type: "collapse",
@@ -100,6 +115,14 @@ const routes = [
      route: "/resetP",
      component: <ResetPasswordForm />,
    },
+   {
+    // type: "collapse",
+     name: "Error",
+     key: "Error",
+     //icon: <Icon fontSize="small">receipt_long</Icon>,
+     route: "/error",
+     component: <ErrorPage />,
+   },
   {
     // type: "collapse",
      name: "ConsultationsL",
@@ -108,15 +131,17 @@ const routes = [
      route: "/consultationList/:id",
      component: <ConsultationList />,
    },
- 
+   
   {
     type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
+    name: "Users",
+    key: "users",
+   icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/users",
+    component: <Users />,
+    role:"admin",
   },
+ 
   {
     type: "collapse",
     name: "Profile",
@@ -126,12 +151,38 @@ const routes = [
     component: <Profile />,
   },
   {
+    // type: "collapse",
+    name: "Notifications",
+    key: "notifications",
+    icon: <Icon fontSize="small">notifications</Icon>,
+    route: "/notifications",
+    component: <Patients />,
+  },
+  {
     type: "collapse",
-    name: "Calendar",
-    key: "calendar",
-   icon:  <EventIcon fontSize="small" />,
-    route: "/consultation",
-    component: <Calendar />,
+    name: "patients",
+    key: "patients",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/patients",
+    component: <Patients />,
+    role: "user",
+  },
+ 
+  {
+   
+    name: "update consultation",
+    //key: "calendar",
+  // icon:  <EventIcon fontSize="small" />,
+    route: "/updateconsultation/:id",
+    component: <UpdateConsultation />,
+  },
+  {
+   
+    name: "consultation details",
+    //key: "calendar",
+  // icon:  <EventIcon fontSize="small" />,
+    route: "/viewconsultation/:id",
+    component: <ConsultationDetails />,
   },
   {
     //type: "collapse",
@@ -141,7 +192,14 @@ const routes = [
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
-
+  {
+    type: "collapse",
+    name: "Calendar",
+    key: "calendar",
+   icon:  <EventIcon fontSize="small" />,
+    route: "/calendar",
+    component: <Calendar />,
+  },
   {
      type: "collapse",
     name: "Logout",

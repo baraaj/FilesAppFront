@@ -17,6 +17,7 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import data from "layouts/dashboard/components/Projects/data";
 import { Avatar } from '@mui/material';
+import best from "layouts/dashboard/components/Projects/best";
 
 function Projects() {
  
@@ -107,7 +108,7 @@ function Projects() {
             return {
               id: file.id,
               companies: file.name,
-          // members: user.userName,
+           members: user.userName,
            
            members: (
       <MDBox display="flex" py={1}>

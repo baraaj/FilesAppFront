@@ -21,6 +21,7 @@ import bgImage from 'assets/images/doctor.jpg';
 function Cover() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
+  const [nihi, setNihi] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,7 +30,7 @@ function Cover() {
     e.preventDefault();
 
     // Check if any field is empty
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !nihi) {
       alert('Please fill in all fields');
       return;
     }
@@ -44,6 +45,7 @@ function Cover() {
         userName: name,
         password: password,
         email:email,
+        nihi:nihi,
       });
       alert('Sign-up successful!Wait 24h for approvement');
        navigate('/sign-in');
@@ -65,6 +67,9 @@ function Cover() {
 
   const handleNameChange = (e) => {
     setName(e.target.value);
+  };
+  const handleNihiChange = (e) => {
+    setNihi(e.target.value);
   };
 
   const handleEmailChange = (e) => {
@@ -116,11 +121,11 @@ function Cover() {
             <MDBox mb={2}>
               <MDInput
                 type="text"
-                label="Speciality"
+                label="Nihi"
                 variant="standard"
                 fullWidth
-                //value={name}
-                //onChange={handleNameChange}
+              value={nihi}
+                onChange={handleNihiChange}
               />
             </MDBox>
             <MDBox mb={2}>

@@ -44,7 +44,7 @@ export default function FilesData(list, handleDelete, currentPage, itemsPerPage)
           marginRight={3}
            
         >
-          Edit
+          Split
         </MDTypography>
         <DeleteIcon color="action" marginLeft={2} onClick={() => handleDelete(item.id)} />
       </MDBox>

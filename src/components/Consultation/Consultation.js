@@ -57,10 +57,10 @@ export default function Consultation() {
           <div className='card-body'>
             <form onSubmit={add}>
               <div className='form-group'>
-                <label>allergies:</label>
+                <label>Allergies:</label>
                 <input
                   type='text'
-                  placeholder='allergies'
+                  placeholder='Allergies'
                   name='allergies'
                   className='form-control'
                   value={allergies}
@@ -68,7 +68,18 @@ export default function Consultation() {
                 />
               </div>
               <div className='form-group'>
-                <label>date:</label>
+                <label>Motif:</label>
+                <input
+                  type='text'
+                  placeholder='Motif'
+                  name='motif'
+                  className='form-control'
+                  value={motif}
+                  onChange={(e) => setMotif(e.target.value)}
+                />
+              </div>
+              <div className='form-group'>
+                <label>Date:</label>
                 <input
                   type='date'
                   placeholder='date'
@@ -79,7 +90,7 @@ export default function Consultation() {
                 />
               </div>
               <div className='form-group'>
-                <label>frais:</label>
+                <label>Fee:</label>
                 <input
                   type='number'
                   placeholder='frais'
@@ -92,7 +103,7 @@ export default function Consultation() {
         
                
               <div className='form-group'>
-                <label>traitement:</label>
+                <label>Traitement:</label>
                 <input
                   type='text'
                   placeholder='traitement'
@@ -103,12 +114,12 @@ export default function Consultation() {
                 />
               </div>
               <div className='form-group'>
-                <label>type_consultation:</label>
+                <label>consultation Type:</label>
                
                             <input placeholder='type_consultation ' name='type_consultation' className='form-control'
                              onChange={(e)=>setType_consultation(e.target.value)} />
                         </div>
-                        <div>
+                        <div style={{marginTop:"50px"}}>
                             <button className='btn btn-success' type="submit" onClick={(e) => {add(e)}}>Save</button>
                             <a href="/profile">
       <button className="btn btn-danger" style={{ marginLeft: "10px" }} onClick={handleClick}>

@@ -40,18 +40,30 @@ import brandWhite from "assets/images/logo.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import Logout from 'layouts/authentication/logout/Logout';
 import { useNavigate } from 'react-router-dom';
-
+import ErrorPage from 'components/ErrorPage/Error';
+ 
 // Function to check if the user is signed in
+
 const isUserSignedIn = () => {
-  // Your authentication logic here
-  // Return true if the user is signed in, false otherwise
-  // Example:
+ 
   const user = localStorage.getItem("token");
+
+   
   return !!user; // Returns true if 'user' exists in localStorage
 };
+ 
+  const isUserAdmin = () => {
+    const userrole = localStorage.getItem("userName"); // Replace with how you store user roles
+    return userrole === "admin";
+  };
+ 
 
 
 export default function App() {
+   
+  const adminRoutes = routes.filter((route) => !route.role ||route.role === "admin");
+const userRoutes = routes.filter((route) => !route.role || route.role === "user");
+
   const [controller, dispatch] = useMaterialUIController();
   const { direction, layout, openConfigurator, darkMode } = controller;
   const [rtlCache, setRtlCache] = useState(null);
@@ -89,6 +101,7 @@ export default function App() {
 
       return null;
     });
+  
 
   const configsButton = (
     <MDBox
@@ -117,12 +130,17 @@ export default function App() {
   const signInRoute = routes.find((route) => route.route === "/authentication/sign-in");
   const signUpRoute = routes.find((route) => route.route === "/authentication/sign-up");
   const dashboardRoute = routes.find((route) => route.route === "/dashboard");
+  const patientRoute = routes.find((route) => route.route === "/patient");
+  const usersRoute = routes.find((route) => route.route === "/users");
+  const errRoute = routes.find((route) => route.route === "/error");
+  const eventRoute = routes.find((route) => route.route === "/event");
   const handleLogout = () => {
     //localStorage.removeItem('token');
     localStorage.setItem('token', null);
-   
+    localStorage.setItem('userName', null);
     navigate('/authentication/sign-in');
   };
+ 
 
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>
@@ -130,12 +148,13 @@ export default function App() {
         <CssBaseline />
         {layout === "dashboard" && isUserSignedIn() && (
           <>
-            {pathname !== signInRoute.route && (
+          {pathname !== signInRoute.route &&pathname !== codeRoute.route &&pathname !== errRoute.route && (
               <Sidenav
                 color={controller.sidenavColor}
                 brand={(controller.transparentSidenav && !darkMode) || controller.whiteSidenav ? brandDark : brandWhite}
                 brandName="Corilus"
-                routes={routes}
+                userrole={localStorage.getItem("userName")}
+                routes={isUserAdmin() ? adminRoutes : userRoutes}
               />
             )}
             <Configurator />
@@ -145,14 +164,26 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           <Route path={signInRoute.route} element={signInRoute.component} />
+
+          {/* Check if the user is signed in */}
           {isUserSignedIn() ? (
-            <Route path={dashboardRoute.route} element={dashboardRoute.component} />
+            <>
+              {/* Check if the user is an admin */}
+              {isUserAdmin() ? (
+                <Route path={dashboardRoute.route} element={dashboardRoute.component} />
+              ) :  <Route path={patientRoute.route} element={patientRoute.component} />}
+
+              {getRoutes(isUserAdmin() ? adminRoutes : userRoutes)} {/* Use the filtered routes */}
+              <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
+             
+            </>
           ) : (
-            <Route path={dashboardRoute.route} element={<Navigate to={signInRoute.route} />} />
+            <Route path={signInRoute.route} element={signInRoute.component} />
           )}
-          {getRoutes(routes)}
-          <Route path="*" element={<Navigate to={signInRoute.route} />} />
+           <Route path="*" element={<Navigate to={signInRoute.route} />} />
+        
         </Routes>
+
       </ThemeProvider>
     </CacheProvider>
   ) : (
@@ -160,12 +191,13 @@ export default function App() {
       <CssBaseline />
       {layout === "dashboard" && isUserSignedIn() && (
         <>
-          {pathname !== signInRoute.route &&pathname !== codeRoute.route && (
+          {pathname !== signInRoute.route &&pathname !== codeRoute.route &&pathname !== errRoute.route && (
             <Sidenav
               color={controller.sidenavColor}
               brand={(controller.transparentSidenav && !darkMode) || controller.whiteSidenav ? brandWhite : brandWhite}
               brandName="Corilus"
-              routes={routes}
+              userrole={localStorage.getItem("userName")}
+              routes={isUserAdmin() ? adminRoutes : userRoutes}
             />
           )}
           <Configurator />
@@ -174,16 +206,24 @@ export default function App() {
       )}
       {layout === "vr" && <Configurator />}
       <Routes>
-        <Route path={signInRoute.route} element={signInRoute.component} />
-        {isUserSignedIn() ? (
-          <Route path={dashboardRoute.route} element={dashboardRoute.component} />
-        ) : (
-          <Route path={dashboardRoute.route} element={<Navigate to={signInRoute.route} />} />
-        )}
-        {getRoutes(routes)}
-        <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
-        <Route path="*" element={<Navigate to={signInRoute.route} />} />
-      </Routes>
+  <Route path={signInRoute.route} element={signInRoute.component} />
+  {isUserSignedIn() ? (
+    <>
+      {isUserAdmin() ? (
+        <Route path={dashboardRoute.route} element={dashboardRoute.component} />
+        
+      ) : null}
+      {getRoutes(isUserAdmin() ? adminRoutes : userRoutes)}
+      <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
+       
+    </>
+  ) : (
+    <Route path={signInRoute.route} element={signInRoute.component} />
+  )}
+   <Route path="*" element={<Navigate to={signInRoute.route} />} />
+  
+</Routes>
+
     </ThemeProvider>
   );
 }
