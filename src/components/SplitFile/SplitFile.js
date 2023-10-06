@@ -131,7 +131,7 @@ export default function SplitFile() {
     <ul className="navbar-nav mr-auto mt-2 mt-lg-0" style={{ display: 'flex', alignItems: 'center' }}>
       {renderNavbarLinks()}
     </ul>
-    <form
+   {/* <form
             className="form-inline my-2 my-lg-0"
             style={{ display: 'flex', alignItems: 'center', marginLeft: '250px' }}
             onSubmit={(e) =>handleSearch(e)} // Prevent form submission
@@ -147,12 +147,12 @@ export default function SplitFile() {
             <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
               Search
             </button>
-          </form>
+  </form>*/}
   </div>
  
 </nav>
  
-{ (filetype==="Fichier de Facturation: Reception") && <SplitNoError />   }
+{ (filetype==="Fichier de Facturation: Reception") && <SplitNoError searchTerm={searchTerm}  />    }
 { (filetype==="Refus d'envoi aprés bloquer les erreurs détectés") && <SplitError />   }
 </div>
  

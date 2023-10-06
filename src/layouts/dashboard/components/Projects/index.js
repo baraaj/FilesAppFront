@@ -109,7 +109,7 @@ function Projects() {
               id: file.id,
               companies: file.name,
            members: user.userName,
-           
+           total :6,
            members: (
       <MDBox display="flex" py={1}>
        

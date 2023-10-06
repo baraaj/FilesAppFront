@@ -47,6 +47,9 @@ export default function SplitError() {
   const [err,setErr]=useState([]);
   const [isCardVisible, setCardVisible] = useState(true);
   const [bla, setBla] = useState(false);
+  
+ 
+   
   const t=[null];
   const fileTypeNumbers = {
     'Fichier de Facturation: Reception': '920000',
@@ -62,7 +65,7 @@ export default function SplitError() {
     setCardVisible(false);
   };
  
-  const handleSearch = (e) => {
+  /*const handleSearch = (e) => {
     e.preventDefault();
 
     if (searchTerm === null || searchTerm === '') {
@@ -71,6 +74,27 @@ export default function SplitError() {
       return  filteredResults;
     } else {
       const filteredResults = fields.filter((record) => {
+        const segmentZoneContents = zoneContents[record.id] || [];
+        return segmentZoneContents.some((zoneContent) =>
+          zoneContent.description?.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      });
+      setFilteredResults(filteredResults);
+    }
+  };*/
+  const handleSearch = (e) => {
+    e.preventDefault();
+
+    if (searchTerm === null || searchTerm === '') {
+       
+       //setFilteredResults(data);
+       filteredResults.length=0;
+    // setFilteredResults(null);
+      return  filteredResults;
+    } else {
+      const filteredResults = data.filter((record) => {
+        getZoneContent(record.id);
+        // Ensure that zoneContents for this record is available
         const segmentZoneContents = zoneContents[record.id] || [];
         return segmentZoneContents.some((zoneContent) =>
           zoneContent.description?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -226,7 +250,24 @@ export default function SplitError() {
   
   return (
 
-    <div>
+    <div style={{marginTop:"20px"}}>
+      <form
+            className="form-inline my-2 my-lg-0"
+            style={{ display: 'flex', alignItems: 'center',marginLeft: '710px' ,width:"400px"}}
+            onSubmit={(e) =>handleSearch(e)} // Prevent form submission
+          >
+            <input
+              className="form-control mr-sm-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
+              Search
+            </button>
+  </form>
        
         {console.log(errors[0])}
       { data.forEach((field) => {
@@ -260,6 +301,53 @@ export default function SplitError() {
 
 </div>
 </div>)}
+{filteredResults.length !== 0 ? (
+        <div>
+          {filteredResults.map((e) => (
+            <div key={e.id}>
+            
+            {getZoneContent(e.id)}
+              
+             
+           <p>Record{e.numRec}</p>
+                <TableContainer   key={e.id}style={{ borderCollapse: 'separate', borderSpacing: '0px' }}>
+                <Table>
+                  <TableHead>
+                 
+                    <TableRow>
+                    
+                    {zoneContents[e.id].map((item, index) => {
+          
+          //const isHighlighted = recE === zoneContent.numRec.toString() && zoneE === zoneContent.zoneNumber.toString();
+          const cellStyle = {
+            textAlign: 'center',
+            whiteSpace: 'nowrap',
+            minWidth: '200px',
+            color:  'inherit',
+          };
+
+          return (
+            <TableCell key={index} style={cellStyle} align="center">
+              <div>
+                <p>
+                  {item.zoneNumber}-{item.description}
+                </p>
+                <p>{item.content}</p>
+               
+              </div>
+            </TableCell>
+          );
+        })}
+      
+                    </TableRow> 
+                  </TableHead>
+                </Table>
+              </TableContainer>
+             
+            </div>
+          ))}
+        </div>
+      ) : (<div>
 <div style={{ marginLeft: '2%', fontWeight: '600',marginTop:"20px" }}>
   
   <h5 style={{ paddingBottom: '2%' }}>
@@ -676,7 +764,7 @@ export default function SplitError() {
 
 </div>
   
-  
+  </div>)}
  
 </div>
   

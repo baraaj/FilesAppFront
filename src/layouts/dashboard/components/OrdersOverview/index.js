@@ -68,14 +68,21 @@ function OrdersOverview() {
             return {
              //id: file.id,
              //companies: file.name,
-        members: user.userName,
-           
+     members: user.userName,
+          total:6,
            members: (
       <MDBox display="flex" py={1}>
        
          <Avatar src={user?user.image.split("C:/reactp/proj/CorilusAppManager/public")[1]:null}/>
        <p style={{marginLeft:"20px"}}> {user.userName}</p>
-      </MDBox>
+      </MDBox>),
+       total: (
+        <MDBox display="flex" py={1}>
+         
+         
+         <p style={{marginLeft:"20px"}}> {6}</p>
+        </MDBox>
+        
     ),
               //budget: file.budget,
              // completion: file.completion,

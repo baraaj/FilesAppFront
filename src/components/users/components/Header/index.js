@@ -18,7 +18,7 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
-
+import { faEye } from '@fortawesome/free-solid-svg-icons';
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -36,6 +36,7 @@ import { Add,List } from "@mui/icons-material";
 import { Navigate} from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import Header from 'layouts/profile/components/Header';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 function Users() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(null);
@@ -417,7 +418,7 @@ useEffect(() => {getUsers();},[Users]);
             onClick={() => handleDelete(params.row.id)}
             style={{ marginRight: '0.5rem' }}
           />
-          <Edit onClick={() => handleEdit(params.row.id)} />
+         <FontAwesomeIcon icon={faEye} onClick={() => handleEdit(params.row.id)} />
         </div>
         );
       },

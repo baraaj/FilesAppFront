@@ -123,6 +123,7 @@ const routes = [
      route: "/error",
      component: <ErrorPage />,
    },
+    
   {
     // type: "collapse",
      name: "ConsultationsL",
@@ -150,14 +151,15 @@ const routes = [
     route: "/profile",
     component: <Profile />,
   },
-  {
+ /* {
     // type: "collapse",
     name: "Notifications",
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
     component: <Patients />,
-  },
+    role:"user",
+  },*/
   {
     type: "collapse",
     name: "patients",
@@ -190,6 +192,14 @@ const routes = [
     key: "sign-in",
     //icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+  {
+    //type: "collapse",
+    name: "first",
+    key: "first",
+    //icon: <Icon fontSize="small">login</Icon>,
+    route: "*",
     component: <SignIn />,
   },
   {

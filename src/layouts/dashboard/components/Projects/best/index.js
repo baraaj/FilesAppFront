@@ -75,7 +75,7 @@ export default function best() {
      // { Header: "ID", accessor: "id", width: "15%", align: "left" },
      
       { Header: "members", accessor: "members", width: "10%", align: "left" },
-      { Header: "Total consultations", accessor: "companies", width: "45%", align: "left" },
+      { Header: "Total consultations", accessor: "total", width: "45%", align: "left" },
       
     /*  { Header: "budget", accessor: "budget", align: "center" },
       { Header: "completion", accessor: "completion", align: "center" },*/

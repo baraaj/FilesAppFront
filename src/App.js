@@ -148,7 +148,7 @@ const userRoutes = routes.filter((route) => !route.role || route.role === "user"
         <CssBaseline />
         {layout === "dashboard" && isUserSignedIn() && (
           <>
-          {pathname !== signInRoute.route &&pathname !== codeRoute.route &&pathname !== errRoute.route && (
+          {pathname !== signInRoute.route &&pathname!=="*" &&pathname !== codeRoute.route &&pathname !== errRoute.route && (
               <Sidenav
                 color={controller.sidenavColor}
                 brand={(controller.transparentSidenav && !darkMode) || controller.whiteSidenav ? brandDark : brandWhite}
@@ -169,9 +169,9 @@ const userRoutes = routes.filter((route) => !route.role || route.role === "user"
           {isUserSignedIn() ? (
             <>
               {/* Check if the user is an admin */}
-              {isUserAdmin() ? (
+              {/*isUserAdmin() ? (
                 <Route path={dashboardRoute.route} element={dashboardRoute.component} />
-              ) :  <Route path={patientRoute.route} element={patientRoute.component} />}
+              ) :  <Route path={patientRoute.route} element={patientRoute.component} />*/}
 
               {getRoutes(isUserAdmin() ? adminRoutes : userRoutes)} {/* Use the filtered routes */}
               <Route path="/logout" element={<Logout onLogout={handleLogout} />} />
@@ -180,18 +180,19 @@ const userRoutes = routes.filter((route) => !route.role || route.role === "user"
           ) : (
             <Route path={signInRoute.route} element={signInRoute.component} />
           )}
-           <Route path="*" element={<Navigate to={signInRoute.route} />} />
-        
+          {/* <Route exact path="*" element={<Navigate to={signInRoute.route} />} />*/}
+          <Route path="/" element={<Navigate to="/authentication/sign-in" />} />
+        <Route path="/authentication/sign-in" element={signInRoute.component} />
         </Routes>
-
+ 
       </ThemeProvider>
     </CacheProvider>
   ) : (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && isUserSignedIn() && (
+      {isUserSignedIn() && layout === "dashboard"   && (
         <>
-          {pathname !== signInRoute.route &&pathname !== codeRoute.route &&pathname !== errRoute.route && (
+          {pathname !== signInRoute.route&&pathname!=="/"  &&pathname !== codeRoute.route &&pathname !== errRoute.route && (
             <Sidenav
               color={controller.sidenavColor}
               brand={(controller.transparentSidenav && !darkMode) || controller.whiteSidenav ? brandWhite : brandWhite}
@@ -220,8 +221,8 @@ const userRoutes = routes.filter((route) => !route.role || route.role === "user"
   ) : (
     <Route path={signInRoute.route} element={signInRoute.component} />
   )}
-   <Route path="*" element={<Navigate to={signInRoute.route} />} />
-  
+    <Route path="/" element={<Navigate to="/authentication/sign-in" />} />
+        <Route path="/authentication/sign-in" element={signInRoute.component} />
 </Routes>
 
     </ThemeProvider>

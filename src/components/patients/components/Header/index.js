@@ -18,7 +18,10 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Icon from "@mui/material/Icon";
-
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -39,6 +42,7 @@ import Header from 'layouts/profile/components/Header';
 function Patients() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
  //console.log(localStorage.userName)
  const name=localStorage.userName;
   const [imgp,setImg]=useState("");
@@ -57,11 +61,22 @@ function Patients() {
    const [patientID, setPatientID] = useState('');
     const [dateNaiss, setDateNaiss] = useState('');
    const [patients, setPatients] = useState([]);
+  const[idd,setIdd]=useState(null);
+   useEffect(() => {  getUserInfo();
+   },[]);
+   useEffect(() => {
+    getPatientsByUserId(userInfo.id);
+  }, [userInfo.id]);
    const handleToggleProfileEdit = () => {
     setIsEditingProfile(!isEditingProfile);
   };
-
-
+  
+  const [editedPatient, setEditedPatient] = useState({
+    id: null,
+    patientName: '',
+    dateNaiss: '',
+    patienID: '',
+  });
   const handleMenuItemClick = (e,id) => {
    e.preventDefault();
    navigate(`/consultation/${id}`);
@@ -71,6 +86,67 @@ function Patients() {
     //navigate(`/consultationList?id=${id}`);
     navigate(`/consultationList/${id}`);
    };
+   const updatePatient = async ( updatedData) => {
+    try {
+      const response = await axios.put(
+        `https://localhost:7120/api/PatientAPI/${updatedData.id}`,
+        updatedData
+      );
+  
+      // Handle the success response here
+      console.log('Patient updated successfully', response.data);
+  
+      // You can perform any necessary actions after a successful update.
+    } catch (error) {
+      // Handle errors here
+      console.error('Error updating patient', error);
+    }
+  };
+  
+  const handleEdit = (patienId) => {
+   /* setEditedPatient({
+      id: patientId,
+      patientName: patient.patientName,
+      dateNaiss: patient.dateNaiss,
+      patientID: patient.patientID,
+    });*/
+
+    setEditedPatient({
+      ...editedPatient,
+      id: patienId,
+    })
+    setIsEditDialogOpen(true);
+  };
+
+  const handleCancelClick = () => {
+     
+    // Exit edit mode
+    setIsEditDialogOpen(false);
+  };
+  const handleEditSave = () => {
+    // Prepare the updated data with changes made by the user
+    const updatedData = {
+      id:editedPatient.id,
+      patientName: editedPatient.patientName,
+      dateNaiss: editedPatient.dateNaiss,
+      patienID: editedPatient.patienID,
+    };
+  console.log(updatedData)
+    // Call the updatePatient function with the patient's ID and updated data
+    updatePatient(updatedData);
+  
+    // Close the edit dialog
+    setIsEditDialogOpen(false);
+  };
+  
+  /*const handleEditSave = () => {
+    // Perform the update of the patient details using the editedPatient state
+    // You can make an API request to update the patient data here
+
+    // After successfully updating, close the dialog
+    setIsEditDialogOpen(false);
+  };*/
+
  // const openMenu = ({ currentTarget }) => setMenu(currentTarget);
  const openMenu = (id, { currentTarget }) => {
   setMenu({ id, anchorEl: currentTarget });
@@ -91,7 +167,7 @@ function Patients() {
     open={Boolean(menu?.anchorEl)} // Check if menu.anchorEl is not null
     onClose={closeMenu}
   >
-      <MenuItem onClick={closeMenu}>
+      <MenuItem onClick={()=>handleEdit(menu.id)}>
         <ListItemIcon>
           <Edit fontSize="small" />
         </ListItemIcon>
@@ -117,6 +193,7 @@ function Patients() {
       </MenuItem>
     </Menu>
   );
+  
   
 const handleDeletePatient = (patientId) => {
   axios
@@ -161,10 +238,11 @@ const handleAddP = async (e) => {
   
 };
 
-const getPatients=()=>{
+const getPatientsByUserId=(userId)=>{
 
  // Make the API request to fetch the patient data
- axios.get('https://localhost:7120/api/PatientAPI')
+ //axios.get('https://localhost:7120/api/PatientAPI')
+ axios.get(`https://localhost:7120/api/PatientAPI/byUserId/${userId}`)
  .then(response => {
    // Handle the successful response
    setPatients(response.data);
@@ -258,11 +336,7 @@ const handleDelete = (userId) => {
     });
 };
 
-  const handleEdit = (userId) => {
-    // Perform the edit action using the user ID
-    console.log(`Editing user with ID ${userId}`);
-    // Add your edit logic here
-  };
+ 
  
   const getUsers=()=>{axios.get(`https://localhost:7213/api/Account/users`)
   .then(response => {
@@ -283,6 +357,7 @@ const getUserInfo=()=>{axios.get(`https://localhost:7213/api/Account/users/${nam
   // Handle the successful response
 
  setUserInfo(response.data);
+ setIdd(response.data.id);
 })
 .catch(error => {
   // Handle the error
@@ -319,12 +394,12 @@ const handleProfileEdit = (id) => {
     });
 };
 useEffect(() => {getUsers();},[Users]);
-  useEffect(() => {
-    getPatients();
-     getUserInfo();
-    // A function that sets the orientation state of the tabs.
 
-      
+  useEffect(() => {
+   
+   
+    // A function that sets the orientation state of the tabs.
+    
  
     function handleTabsOrientation() {
       return window.innerWidth < breakpoints.values.sm
@@ -562,7 +637,65 @@ useEffect(() => {getUsers();},[Users]);
  
 
     </div>
+    <Dialog open={isEditDialogOpen} onClose={handleCancelClick}>
+  <DialogTitle>Edit Patient</DialogTitle>
+  <DialogContent>
+    <TextField
+      label="PatientID"
+      
+      fullWidth
+      //value={currentPassword}
+      //onChange={(e) => setCurrentPassword(e.target.value)}
+      value={editedPatient.patientID}
+      onChange={(e) =>
+        setEditedPatient({
+          ...editedPatient,
+          patientID: e.target.value,
+        })
+      }
+      margin="normal"
+    />
+    <TextField
+      label="PatientName"
+      value={editedPatient.patientName}
+      onChange={(e) =>
+        setEditedPatient({
+          ...editedPatient,
+          patientName: e.target.value,
+        })
+      }
+      fullWidth
+     // value={newPassword}
+      //onChange={(e) => setNewPassword(e.target.value)}
+      margin="normal"
+    />
+    <TextField
+      label="Birth Date"
+      type="date"
+      fullWidth
+      value={editedPatient.dateNaiss}
+      onChange={(e) =>
+        setEditedPatient({
+          ...editedPatient,
+          dateNaiss: e.target.value,
+        })
+      }
+      //value={confirmNewPassword}
+      //onChange={(e) => setConfirmNewPassword(e.target.value)}
+      margin="normal"
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleCancelClick} color="primary">
+      Cancel
+    </Button>
+    <Button onClick={handleEditSave} color="primary">
+      Save
+    </Button>
+  </DialogActions>
+</Dialog>
     </div>
+    
   );
 }
 

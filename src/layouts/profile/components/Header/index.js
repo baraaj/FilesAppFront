@@ -763,10 +763,12 @@ useEffect(() => {getUsers();},[Users]);
             </Typography>
           </Grid>
           
-          <Grid item xs={12}>
+          
+   {userInfo.role==="User" &&  <>
+   <Grid item xs={12}>
             <hr />
           </Grid>
-          <Grid item xs={12} sm={3}>
+   <Grid item xs={12} sm={3}>
             <Typography variant="body1">Nihi</Typography>
           </Grid>
           <Grid item xs={12} sm={9}>
@@ -784,7 +786,6 @@ useEffect(() => {getUsers();},[Users]);
               )}
             </Typography>
           </Grid>
-          
           <Grid item xs={12}>
             <hr />
           </Grid>
@@ -806,7 +807,12 @@ useEffect(() => {getUsers();},[Users]);
               )}
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+         
+          </>
+          }
+         
+          
+         <Grid item xs={12}>
             <hr />
           </Grid>
           <Grid item xs={12} sm={3}>
